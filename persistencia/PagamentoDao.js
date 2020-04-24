@@ -14,4 +14,6 @@ PagamentoDao.prototype.buscaPorId = function(id,callback){
           this._connection.query("select * from pagamentos where id = ?",[id],callback);
     }
 
-module.exports = function(){ return PagamentoDao; };
+module.exports = function(){ 
+      return PagamentoDao; 
+};
