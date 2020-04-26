@@ -1,19 +1,29 @@
 ### Testando serviço:
 ```bash
 $ curl http://localhost:3000/pagamentos/pagamento -X POST -v -H "Content-type: application/json" -d @files/pagamento.json | json_pp
+
+$ curl -X PUT http://localhost:3000/pagamentos/pagamento/10 -v
 ```
 ### acesso ao mysql:
 ````bash
  $ mysql -u root; ou mysql -u root -p -h localhost
 
+ ### Comando para alterar a senha do root:
+ mysql> alter user 'root'@'localhost' IDENTIFIED BY 'nova_senha_complexa';
+Query OK, 0 rows affected (0.00 sec)
+
+### Comando para alterar a senha do root e deixar mysql_native_password:
+ ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '';
+
 ````
 
-### Versões do express-Validator >=5.3.1
+### Versão do express-Validator >=5.3.1
+$ npm install --save express-Validator@5.3.1
 
-Executar pelo _terminal_ a partir do diretório do projeto os seguintes comandos:
+Executar pelo _terminal_ a partir do diretório do projeto o seguinte comando para iniciar o serviço local:
 
 ```bash
-$ npm install --save express-Validator@5.3.1
+$ nodemon index.js
 $ 
  
  ### os principais códigos e seus significados:

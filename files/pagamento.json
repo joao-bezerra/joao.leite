@@ -1,6 +1,6 @@
 {
           "forma_de_pagamento":"payfast",
           "valor": 99.99,
-          "moeda":"USD",
+          "moeda":"BRS",
           "descricao":"criando um pagamento"
 }
