@@ -1,9 +1,31 @@
 module.exports = function(app){
-   app.get('/pagamentos', function(req, res){
+   app.get('/pagamentos/', function(req, res){
      console.log('Recebida requisicao de teste na porta 3000.')
      res.send('OK.');
    });
    
+   app.delete('/pagamentos/pagamento/:id', function(req, res){
+     var pagamento ={};
+     var id = req.params.id;
+
+     pagamento.id =id;
+     pagamento.status ='CANCELADO';
+
+     var connection = app.persistencia.connectionFactory();
+     var pagamentoDao = new app.persistencia.PagamentoDao(connection);
+
+     pagamentoDao.atualiza(pagamento, function(erro){
+      if (erro){
+        res.status(500).send(erro);
+        return;
+      }
+      res.status(204).send(pagamento);
+      console.log('Pagamento Cancelado');
+
+     });
+
+   });
+
    app.put ('/pagamentos/pagamento/:id', function(req ,res){
     var pagamento = {};
     var id = req.params.id;
@@ -20,6 +42,7 @@ module.exports = function(app){
         return;
       }
       res.send(pagamento);
+      console.log('Pagamento Confirmado');
 
     });
 
@@ -55,11 +78,34 @@ module.exports = function(app){
          console.log('Erro ao inserir no banco:' + erro);
          res.status(500).send(erro);
        } else {
+         pagamento.id = resultado.insertId;
        console.log('pagamento criado');
        res.location('/pagamentos/pagamento/' +
-             resultado.insertId);
+       pagamento.id);
+
+       var response ={
+         dados_do_pagamento: pagamento,
+         links: [
+           {
+           href:"http://localhost:3000/pagamentos/pagamento/"
+                  +pagamento.id,
+           rel:"confirmar",
+           method:"PUT"
+
+         },
+         {
+          href:"http://localhost:3000/pagamentos/pagamento/"
+          +pagamento.id,
+         rel:"cancelar",
+         method:"DELETE"
+
+         }
+
+        ]
+
+       }
  
-       res.status(201).json(pagamento);
+       res.status(201).json(response);
      }
      
      });
