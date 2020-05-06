@@ -1,8 +1,48 @@
+var logger = require('../servicos/logger');
+
 module.exports = function(app){
   app.get('/pagamentos', function(req, res){
     console.log('Recebida requisicao de teste na porta 3000.')
     res.send('OK.');
   });
+
+  app.get('/pagamentos/pagamento/:id', function(req, res){
+      var id = req.params.id;
+      console.log('consultando pagamento:' + id);
+
+      logger.info('consultando pagamento:' + id);
+
+  var memcachedClient = app.servicos.memcachedClient();
+
+    memcachedClient.get('pagamento-' + id, function(erro, retorno){
+      if (erro || !retorno){
+        console.log('MISS - chave não encontrada');
+
+  var connection = app.persistencia.connectionFactory();
+  var pagamentoDao = new app.persistencia.PagamentoDao(connection);
+      
+    pagamentoDao.buscaPorId(id, function(erro, resultado){
+      if (erro){
+       console.log('erro ao consultar no banco:' + id);
+          res.status(500).send(erro);
+            return;
+          }
+      
+       console.log('pagamento encontrado :' + JSON.stringify(resultado))
+        res.json(resultado);
+          return;
+      
+    }); 
+      //**HIT no Cache***///
+      } else{
+        console.log('HIT - valor: ' + JSON.stringify(retorno)); 
+        res.json(retorno);
+        return;       
+      }
+           
+ });
+
+});
 
   app.delete('/pagamentos/pagamento/:id', function(req, res){
     var pagamento = {};
@@ -78,6 +118,13 @@ module.exports = function(app){
       } else {
       pagamento.id = resultado.insertId;
       console.log('pagamento criado');
+
+      var memcachedClient = app.servicos.memcachedClient();
+      memcachedClient.set('pagamento-' + pagamento.id,
+        pagamento, 60000, function(erro){
+        console.log('nova chave adicionada ao cache: pagamento-' + pagamento.id);
+      });
+
 
       if (pagamento.forma_de_pagamento == 'cartao'){
         var cartao = req.body["cartao"];

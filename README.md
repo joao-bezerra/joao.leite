@@ -3,6 +3,11 @@
 $ curl http://localhost:3000/pagamentos/pagamento -X POST -v -H "Content-type: application/json" -d @files/pagamento.json | json_pp
 
 $ curl -X PUT http://localhost:3000/pagamentos/pagamento/10 -v
+
+$ curl http://localhost:3000/correios/calculo-prazo -X POST -v -H "Content-type: application/json" -d @files/dadosentrega.json | json_pp
+
+### Comando para criação de imagem
+$ curl -X POST http://localhost:3000/upload/imagem --data-binary @imagem.jpg -H "Content-type: application/octet-stream" -v -H "filename: imagem.jpg"
 ```
 ### acesso ao mysql:
 ````bash
