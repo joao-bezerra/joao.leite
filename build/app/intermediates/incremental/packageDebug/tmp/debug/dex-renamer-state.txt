@@ -1,0 +1,4 @@
+#Wed Feb 17 16:18:02 GMT-03:00 2021
+base.0=C\:\\Users\\joao.leite\\Desktop\\Flutter\\curso_mobx\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\out\\classes.dex
+path.0=classes.dex
+renamed.0=classes.dex
